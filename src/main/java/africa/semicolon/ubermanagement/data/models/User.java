@@ -1,2 +1,4 @@
-package africa.semicolon.ubermanagement.data.models;public class User {
+package africa.semicolon.ubermanagement.data.models;
+
+public class User {
 }

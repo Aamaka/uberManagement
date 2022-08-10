@@ -1,2 +1,5 @@
-package africa.semicolon.ubermanagement.data.models;public class Vehicle {
+package africa.semicolon.ubermanagement.data.models;
+
+public class Vehicle {
+
 }
