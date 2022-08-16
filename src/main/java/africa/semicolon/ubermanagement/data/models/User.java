@@ -1,33 +1,53 @@
 package africa.semicolon.ubermanagement.data.models;
 
+import africa.semicolon.ubermanagement.data.models.enums.Gender;
+import africa.semicolon.ubermanagement.data.models.enums.PaymentType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Validated
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
 
-    @NotBlank @NotNull @Valid
     @Column(name = "name")
     private String name;
+
     private String userAddress;
 
-    @Email @Valid @NotBlank
+    @Email
     private  String email;
+
     private String userContactNumber;
+
+    private String phoneNumber;
+
+    private String pickUpAddress;
+
+    private String dropOffAddress;
+
+    private String password;
+
+    private Gender gender;
+
+    @ManyToOne
+    private Payment payment;
+
+    private PaymentType paymentType;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime date = LocalDateTime.now();
 }

@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.data.models;
 
+import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+
 
 @Entity
 @AllArgsConstructor
@@ -26,8 +27,15 @@ public class Driver {
     private String driverName;
     private String address;
 
-    @Valid @Email @NotBlank  @NotBlank
+    @Valid @Email
     public String email;
     private String driverContact;
+    private String carNumber;
+    private String carType;
+    private String carColour;
+    private String password;
+    private Gender gender;
+
+
 
 }
