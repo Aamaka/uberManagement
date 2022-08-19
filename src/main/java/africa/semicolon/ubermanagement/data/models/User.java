@@ -50,4 +50,13 @@ public class User {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime date = LocalDateTime.now();
+
+    public User(String name,  String email, String phoneNumber,String userAddress, String password, Gender gender) {
+        this.name = name;
+        this.userAddress = userAddress;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.gender = gender;
+    }
 }

@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.dtos.requests;
 
+import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,6 @@ public class CreateUserRequest {
     @Column(unique = true)
     private String phoneNumber;
     private String address;
+    private Gender gender;
     private String password;
 }
