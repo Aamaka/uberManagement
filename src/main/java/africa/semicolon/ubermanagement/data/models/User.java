@@ -2,10 +2,8 @@ package africa.semicolon.ubermanagement.data.models;
 
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import africa.semicolon.ubermanagement.data.models.enums.PaymentType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,22 +14,27 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer userId;
 
-    @Column(name = "name")
     private String name;
+
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime date = LocalDateTime.now();
 
     private String userAddress;
 
     @Email
+    @Column(unique = true)
+
     private  String email;
 
-    private String userContactNumber;
 
     private String phoneNumber;
 
@@ -39,8 +42,12 @@ public class User {
 
     private String dropOffAddress;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
+    private String confirmPassword;
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @ManyToOne
@@ -48,15 +55,14 @@ public class User {
 
     private PaymentType paymentType;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime date = LocalDateTime.now();
 
-    public User(String name,  String email, String phoneNumber,String userAddress, String password, Gender gender) {
-        this.name = name;
-        this.userAddress = userAddress;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.gender = gender;
-    }
+
+//    public User(String name,  String email, String phoneNumber,String userAddress, String password, Gender gender) {
+//        this.name = name;
+//        this.userAddress = userAddress;
+//        this.email = email;
+//        this.phoneNumber = phoneNumber;
+//        this.password = password;
+//        this.gender = gender;
+//    }
 }

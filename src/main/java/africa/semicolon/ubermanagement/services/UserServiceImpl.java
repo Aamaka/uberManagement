@@ -2,10 +2,12 @@ package africa.semicolon.ubermanagement.services;
 
 import africa.semicolon.ubermanagement.data.models.User;
 import africa.semicolon.ubermanagement.data.repositories.UserRepository;
-import africa.semicolon.ubermanagement.dtos.requests.*;
-import africa.semicolon.ubermanagement.dtos.responses.*;
+import africa.semicolon.ubermanagement.dtos.user.requests.*;
+import africa.semicolon.ubermanagement.dtos.user.responses.*;
+import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,21 +20,25 @@ public class UserServiceImpl implements UserServices{
     private  final UserRepository userRepository;
 
     @Override
-    public CreateUserResponse createUser(CreateUserRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        log.info("here is the name: " + request.getName());
-        user.setEmail(request.getEmail());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setUserAddress(request.getAddress());
-        user.setPassword(request.getPassword());
-        log.info("here is the password: " + request.getPassword());
-        user.setGender(request.getGender());
+    public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .userAddress(request.getAddress())
+                .gender(request.getGender())
+                .password(request.getPassword())
+                .confirmPassword(request.getConfirmPassword())
+                .build();
+        if(request.getPassword().equals(request.getConfirmPassword())){
+            User saved = userRepository.save(user);
+            CreateUserResponse response = new CreateUserResponse();
+            response.setMessage("successful " + saved.getName());
+            return response;
+        }else {
+            throw new UserException("Password does not match", HttpStatus.NOT_ACCEPTABLE);
+        }
 
-        User saved = userRepository.save(user);
-        CreateUserResponse response = new CreateUserResponse();
-        response.setMessage("successful " + saved.getName());
-        return response;
     }
 
     @Override

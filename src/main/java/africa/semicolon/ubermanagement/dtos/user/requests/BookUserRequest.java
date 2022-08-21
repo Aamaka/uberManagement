@@ -1,4 +1,4 @@
-package africa.semicolon.ubermanagement.dtos.requests;
+package africa.semicolon.ubermanagement.dtos.user.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

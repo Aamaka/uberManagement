@@ -1,9 +1,8 @@
-package africa.semicolon.ubermanagement.dtos.requests;
+package africa.semicolon.ubermanagement.dtos.user.requests;
 
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
@@ -22,5 +21,12 @@ public class CreateUserRequest {
     private String phoneNumber;
     private String address;
     private Gender gender;
+
+    @JsonIgnore
     private String password;
+
+
+    @JsonIgnore
+    private String confirmPassword;
+
 }

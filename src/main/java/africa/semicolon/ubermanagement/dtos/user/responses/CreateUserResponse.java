@@ -1,4 +1,4 @@
-package africa.semicolon.ubermanagement.dtos.responses;
+package africa.semicolon.ubermanagement.dtos.user.responses;
 
 import lombok.Data;
 
