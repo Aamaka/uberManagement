@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/driver")
-    public ResponseEntity<?> register(@RequestBody RegisterDriverRequest request){
+    public ResponseEntity<?> register(@RequestBody RegisterDriverRequest request) throws UserException {
         log.info("Account creation Request ==> {}", request);
         driverService.register(request);
         ApiResponse apiResponse = ApiResponse.builder()

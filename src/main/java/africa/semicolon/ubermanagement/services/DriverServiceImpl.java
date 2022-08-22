@@ -1,13 +1,14 @@
 package africa.semicolon.ubermanagement.services;
-
 import africa.semicolon.ubermanagement.data.models.Driver;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
+import africa.semicolon.ubermanagement.exception.UserException;
 import africa.semicolon.ubermanagement.mapper.Mapper;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class DriverServiceImpl implements DriverService{
     private final DriverRepository repository;
 
     @Override
-    public RegisterDriverResponse register(RegisterDriverRequest request) {
+    public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
         Driver driver = Driver.builder()
                 .driverName(request.getName())
                 .address(request.getAddress())
@@ -29,13 +30,18 @@ public class DriverServiceImpl implements DriverService{
                 .carColour(request.getCarColour())
                 .gender(request.getGender())
                 .password(request.getPassword())
+                .confirmPassword(request.getConfirmPassword())
                 .location(request.getLocation())
                 .build();
-        Driver saved = repository.save(driver);
-        RegisterDriverResponse response = new RegisterDriverResponse();
-        Mapper.map(saved, response);
+        if(request.getPassword().equals(request.getConfirmPassword())){
+            Driver saved = repository.save(driver);
+            RegisterDriverResponse response = new RegisterDriverResponse();
+            Mapper.map(saved, response);
+            return response;
+        }else {
+            throw new UserException("Password does not match", HttpStatus.NOT_ACCEPTABLE);
+        }
 
-        return response;
     }
 
     @Override

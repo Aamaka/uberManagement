@@ -4,10 +4,11 @@ import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
+import africa.semicolon.ubermanagement.exception.UserException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface DriverService {
-    RegisterDriverResponse register(RegisterDriverRequest request);
+    RegisterDriverResponse register(RegisterDriverRequest request) throws UserException;
     LoginDriverResponse login(LoginDriverRequest request);
 }
