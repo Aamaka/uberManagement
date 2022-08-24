@@ -19,7 +19,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserServices{
 
     private  final UserRepository userRepository;
-    private final DriverRepository driverRepository;
+    private final DriverService driverService;
+
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
@@ -44,30 +45,32 @@ public class UserServiceImpl implements UserServices{
     }
 
     @Override
-    public LoginUserResponse login(LoginUserRequest request) {
+    public LoginUserResponse login(LoginUserRequest request) throws UserException {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
         if(user.isPresent()){
             if(user.get().getPassword().equals(request.getPassword())){
                 LoginUserResponse response = new LoginUserResponse();
                 response.setMessage("Welcome back " + user.get().getName() + " where you wan go");
                 return response;
+            }else {
+                throw  new UserException("Invalid details", HttpStatus.NOT_FOUND);
             }
         }
-        throw  new NullPointerException("User does not exist");
+        throw  new UserException("User does not exist", HttpStatus.NOT_FOUND);
     }
 
     @Override
-    public BookUserResponse book(BookUserRequest request) {
+    public BookUserResponse book(BookUserRequest request) throws UserException {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
         if(user.isPresent()){
             user.get().setPickUpAddress(request.getPickUpAddress());
             user.get().setDropOffAddress(request.getDropOffAddress());
             BookUserResponse response = new BookUserResponse();
-            response.setMessage("your trip from " + user.get().getPickUpAddress() + " to "
-            + user.get().getDropOffAddress());
+            response.setMessage("you have been connected to " + driverService.getDriver(request.getLocation())
+                    + " your trip from " + user.get().getDropOffAddress() + " was ordered at " + response.getDateTime());
             return response;
         }else {
-            return null;
+            throw new UserException("Invalid email", HttpStatus.NOT_FOUND);
         }
 
     }

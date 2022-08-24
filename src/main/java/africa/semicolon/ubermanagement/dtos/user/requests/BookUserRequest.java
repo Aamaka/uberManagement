@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class BookUserRequest {
     private String pickUpAddress;
     private String dropOffAddress;
+    private String location;
     private String email;
 }
