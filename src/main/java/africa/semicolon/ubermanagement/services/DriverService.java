@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.services;
 
+import africa.semicolon.ubermanagement.data.models.DriverDto;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
@@ -10,5 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface DriverService {
     RegisterDriverResponse register(RegisterDriverRequest request) throws UserException;
+
+    DriverDto getDriver(String location);
     LoginDriverResponse login(LoginDriverRequest request);
 }

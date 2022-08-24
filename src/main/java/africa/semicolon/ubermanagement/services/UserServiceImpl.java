@@ -1,6 +1,7 @@
 package africa.semicolon.ubermanagement.services;
 
 import africa.semicolon.ubermanagement.data.models.User;
+import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
 import africa.semicolon.ubermanagement.data.repositories.UserRepository;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserServices{
 
     private  final UserRepository userRepository;
+    private final DriverRepository driverRepository;
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
