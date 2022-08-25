@@ -13,5 +13,5 @@ public interface DriverService {
     RegisterDriverResponse register(RegisterDriverRequest request) throws UserException;
 
     DriverDto getDriver(String location) throws UserException;
-    LoginDriverResponse login(LoginDriverRequest request);
+    DriverDto login(LoginDriverRequest request) throws UserException;
 }

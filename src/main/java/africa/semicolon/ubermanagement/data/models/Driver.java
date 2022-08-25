@@ -15,7 +15,7 @@ import javax.validation.constraints.Email;
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer driverId;
+    private int driverId;
     private String driverName;
     private String address;
 

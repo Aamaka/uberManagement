@@ -4,7 +4,6 @@ import africa.semicolon.ubermanagement.data.models.DriverDto;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import africa.semicolon.ubermanagement.mapper.Mapper;
@@ -12,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -59,12 +59,32 @@ public class DriverServiceImpl implements DriverService{
                     .phoneNumber(drive.getDriverContact())
                     .vehicleNumber(drive.getCarNumber())
                     .build();
+        }else {
+            throw new UserException("No available driver at your location", HttpStatus.NOT_ACCEPTABLE);
         }
-        throw new UserException("No driver available at your location", HttpStatus.NOT_ACCEPTABLE);
+
     }
 
     @Override
-    public LoginDriverResponse login(LoginDriverRequest request) {
-        return null;
+    public DriverDto login(LoginDriverRequest request) throws UserException {
+        Optional<Driver> driver = repository.findByEmail(request.getEmail());
+        if(driver.isPresent()){
+            if(driver.get().getPassword().equals(request.getPassword())){
+                if(driver.get().getLocation() != null){
+
+                    Driver driver1 = new Driver();
+                    driver1.setLocation(request.getLocation());
+                    Driver drive = repository.save(driver1);
+                    DriverDto driverDto = new DriverDto();
+                    driverDto.setMessage("Welcome back, " + drive.getDriverName());
+                    return driverDto;
+                }
+                throw new UserException("Driver not found", HttpStatus.NOT_FOUND);
+            }
+            throw new UserException("Incorrect Details", HttpStatus.NOT_FOUND);
+        }
+
+        throw new UserException("Driver does not exist", HttpStatus.NOT_FOUND);
     }
+
 }

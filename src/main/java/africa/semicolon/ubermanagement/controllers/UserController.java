@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.controllers;
-
+import africa.semicolon.ubermanagement.data.models.DriverDto;
+import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.ApiResponse;
 import africa.semicolon.ubermanagement.dtos.user.requests.BookUserRequest;
@@ -31,12 +32,12 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public LoginUserResponse login(@RequestBody LoginUserRequest request){
+    public LoginUserResponse login(@RequestBody LoginUserRequest request) throws UserException {
         return services.login(request);
     }
 
     @PostMapping("/book")
-    public BookUserResponse book (@RequestBody BookUserRequest request){
+    public BookUserResponse book (@RequestBody BookUserRequest request) throws UserException {
         return services.book(request);
     }
 
@@ -52,4 +53,15 @@ public class UserController {
         log.info("returning response");
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
+
+    @GetMapping("/getDriver")
+    public DriverDto getDriver(@RequestBody String location) throws UserException {
+        return driverService.getDriver(location);
+    }
+
+    @PostMapping("/login/driver")
+    public DriverDto loginDriver(@RequestBody LoginDriverRequest request) throws UserException {
+        return driverService.login(request);
+    }
+
 }
