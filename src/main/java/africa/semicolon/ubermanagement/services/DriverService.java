@@ -2,7 +2,6 @@ package africa.semicolon.ubermanagement.services;
 
 import africa.semicolon.ubermanagement.data.models.DriverDto;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.exception.UserException;

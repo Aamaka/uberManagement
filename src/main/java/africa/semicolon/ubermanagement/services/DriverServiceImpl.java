@@ -10,8 +10,6 @@ import africa.semicolon.ubermanagement.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -51,13 +49,12 @@ public class DriverServiceImpl implements DriverService{
     public DriverDto getDriver(String location) throws UserException {
         Optional<Driver> driver = repository.findDriverByLocation(location);
         if(driver.isPresent()){
-            Driver drive = driver.get();
             return DriverDto.builder()
-                    .name(drive.getDriverName())
-                    .model(drive.getCarType())
-                    .color(drive.getCarColour())
-                    .phoneNumber(drive.getDriverContact())
-                    .vehicleNumber(drive.getCarNumber())
+                    .name(driver.get().getDriverName())
+                    .model(driver.get().getCarType())
+                    .color(driver.get().getCarColour())
+                    .phoneNumber(driver.get().getDriverContact())
+                    .vehicleNumber(driver.get().getCarNumber())
                     .build();
         }else {
             throw new UserException("No available driver at your location", HttpStatus.NOT_ACCEPTABLE);
@@ -70,16 +67,19 @@ public class DriverServiceImpl implements DriverService{
         Optional<Driver> driver = repository.findByEmail(request.getEmail());
         if(driver.isPresent()){
             if(driver.get().getPassword().equals(request.getPassword())){
-                if(driver.get().getLocation() != null){
+                driver.get().setDriverName(driver.get().getDriverName());
+                driver.get().setAddress(driver.get().getDriverName());
+                driver.get().setLocation(request.getLocation());
+                driver.get().setDriverContact(driver.get().getDriverContact());
+                driver.get().setCarColour(driver.get().getCarColour());
+                driver.get().setCarNumber(driver.get().getCarNumber());
+                driver.get().setCarType(driver.get().getCarType());
+                driver.get().setGender(driver.get().getGender());
 
-                    Driver driver1 = new Driver();
-                    driver1.setLocation(request.getLocation());
-                    Driver drive = repository.save(driver1);
-                    DriverDto driverDto = new DriverDto();
-                    driverDto.setMessage("Welcome back, " + drive.getDriverName());
-                    return driverDto;
-                }
-                throw new UserException("Driver not found", HttpStatus.NOT_FOUND);
+                Driver saveDrive = repository.save(driver.get());
+                DriverDto driverDto = new DriverDto();
+                driverDto.setMessage("Welcome back, " + saveDrive.getDriverName());
+                return driverDto;
             }
             throw new UserException("Incorrect Details", HttpStatus.NOT_FOUND);
         }

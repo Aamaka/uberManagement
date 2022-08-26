@@ -1,7 +1,5 @@
 package africa.semicolon.ubermanagement.services;
-
 import africa.semicolon.ubermanagement.data.models.User;
-import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
 import africa.semicolon.ubermanagement.data.repositories.UserRepository;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
@@ -50,6 +48,7 @@ public class UserServiceImpl implements UserServices{
         if(user.isPresent()){
             if(user.get().getPassword().equals(request.getPassword())){
                 LoginUserResponse response = new LoginUserResponse();
+                log.info("login response");
                 response.setMessage("Welcome back " + user.get().getName() + " where you wan go");
                 return response;
             }else {
@@ -67,7 +66,8 @@ public class UserServiceImpl implements UserServices{
             user.get().setDropOffAddress(request.getDropOffAddress());
             BookUserResponse response = new BookUserResponse();
             response.setMessage("you have been connected to " + driverService.getDriver(request.getLocation())
-                    + " your trip from " + user.get().getDropOffAddress() + " was ordered at " + response.getDateTime());
+                    + " your trip from " + user.get().getPickUpAddress() + " has been ordered.");
+            response.setDateTime(response.getDateTime());
             return response;
         }else {
             throw new UserException("Invalid email", HttpStatus.NOT_FOUND);

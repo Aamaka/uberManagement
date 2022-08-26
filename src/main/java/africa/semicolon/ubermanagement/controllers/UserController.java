@@ -38,6 +38,7 @@ public class UserController {
 
     @PostMapping("/book")
     public BookUserResponse book (@RequestBody BookUserRequest request) throws UserException {
+        log.info("login response controller");
         return services.book(request);
     }
 

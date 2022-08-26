@@ -14,7 +14,7 @@ public class RegisterDriverRequest {
     private String phoneNumber;
     private String carNumber;
     private String carType;
-    private String CarColour;
+    private String carColour;
     private Gender gender;
 
     @JsonIgnore
