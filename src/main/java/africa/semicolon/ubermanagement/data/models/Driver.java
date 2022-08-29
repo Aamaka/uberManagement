@@ -37,6 +37,4 @@ public class Driver {
     private Gender gender;
     private String location;
 
-
-
 }

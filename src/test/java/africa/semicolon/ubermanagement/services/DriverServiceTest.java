@@ -1,5 +1,4 @@
 package africa.semicolon.ubermanagement.services;
-
 import africa.semicolon.ubermanagement.data.models.DriverDto;
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -23,20 +21,21 @@ class DriverServiceTest {
     @DisplayName("Create a user")
     public void testToCreateAUser() throws UserException {
         RegisterDriverRequest request = RegisterDriverRequest.builder()
-                .name("Aye")
-                .address("lasu")
+                .name("lalah")
+                .address("aja")
                 .carColour("pink")
-                .carNumber("678906453")
+                .carNumber("6789064537")
                 .carType("Benz")
-                .email("lag@gmail.com")
-                .phoneNumber("5678909876")
+                .location("aja")
+                .email("lalah@gmail.com")
+                .phoneNumber("56778909876")
                 .gender(Gender.MALE)
                 .password("9876")
                 .confirmPassword("9876")
                 .build();
         RegisterDriverResponse response = driverService.register(request);
         assertNotNull(response);
-        assertEquals("Aye Your registration was successful", response.getMessage());
+        assertEquals("lalah Your registration was successful", response.getMessage());
     }
 
     @Test
@@ -53,8 +52,8 @@ class DriverServiceTest {
     @Test
     @DisplayName("get a driver")
     public void testToGetADriver() throws UserException {
-        DriverDto driverDto = driverService.getDriver("fadeyi");
-        assertEquals("Aye", driverDto.getName());
-        assertEquals("5678909876", driverDto.getPhoneNumber());
+        DriverDto driverDto = driverService.getDriver("aja");
+        assertEquals("Peter", driverDto.getName());
+
     }
 }

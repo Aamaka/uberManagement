@@ -10,6 +10,9 @@ import africa.semicolon.ubermanagement.mapper.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -17,7 +20,7 @@ import java.util.Optional;
 public class DriverServiceImpl implements DriverService{
 
 
-    private final DriverRepository repository;
+    private DriverRepository repository;
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
@@ -47,15 +50,21 @@ public class DriverServiceImpl implements DriverService{
 
     @Override
     public DriverDto getDriver(String location) throws UserException {
-        Optional<Driver> driver = repository.findDriverByLocation(location);
-        if(driver.isPresent()){
-            return DriverDto.builder()
-                    .name(driver.get().getDriverName())
-                    .model(driver.get().getCarType())
-                    .color(driver.get().getCarColour())
-                    .phoneNumber(driver.get().getDriverContact())
-                    .vehicleNumber(driver.get().getCarNumber())
-                    .build();
+        List<Driver> driver = repository.findDriverByLocation(location);
+        if(!driver.isEmpty()){
+            if(driver.size() == 1){
+                Driver driver1 = driver.get(0);
+                DriverDto driverDto = new DriverDto();
+                Mapper.mapper(driver1, driverDto);
+                return driverDto;
+            }else {
+                SecureRandom random = new SecureRandom();
+                Driver assignDriver = driver.get(random.nextInt(driver.size()));
+                DriverDto driverDto = new DriverDto();
+                Mapper.mapper(assignDriver, driverDto);
+                return driverDto;
+            }
+
         }else {
             throw new UserException("No available driver at your location", HttpStatus.NOT_ACCEPTABLE);
         }
