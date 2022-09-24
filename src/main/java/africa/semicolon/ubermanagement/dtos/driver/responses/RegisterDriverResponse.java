@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class RegisterDriverResponse {
     private String message;
-    private String name;
-    private String phoneNumber;
-    private String model;
-    private String vehicleNumber;
-    private String carColour;
+//    private String name;
+//    private String phoneNumber;
+//    private String model;
+//    private String vehicleNumber;
+//    private String carColour;
+
+
 }

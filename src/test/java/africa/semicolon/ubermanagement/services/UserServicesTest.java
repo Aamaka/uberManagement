@@ -26,9 +26,9 @@ class UserServicesTest {
     public void addAUserTest() throws UserException {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Obi");
-        request.setPhoneNumber("67890354");
+        request.setPhoneNumber("670890354");
         request.setAddress("lag");
-        request.setEmail("obi@gmail.com");
+        request.setEmail("obik@gmail.com");
         request.setGender(Gender.MALE);
         request.setPassword("8888");
         request.setConfirmPassword("8888");

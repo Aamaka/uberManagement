@@ -1,7 +1,6 @@
 package africa.semicolon.ubermanagement.dtos.driver.requests;
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 @Data
 @AllArgsConstructor
@@ -12,16 +11,11 @@ public class RegisterDriverRequest {
     private String address;
     private String email;
     private String phoneNumber;
-    private String carNumber;
-    private String carType;
-    private String carColour;
     private Gender gender;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String password;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String confirmPassword;
-
-    private String location;
 }

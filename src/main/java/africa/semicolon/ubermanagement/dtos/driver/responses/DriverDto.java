@@ -1,5 +1,4 @@
-package africa.semicolon.ubermanagement.data.models;
-
+package africa.semicolon.ubermanagement.dtos.driver.responses;
 import lombok.*;
 
 @AllArgsConstructor

@@ -1,21 +1,21 @@
-package africa.semicolon.ubermanagement.data.models;
+package africa.semicolon.ubermanagement.dtos.driver.requests;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
-public class Vehicle {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class RegisterVehicleRequest {
+    @Email
+    private String email;
 
     private String model;
 
@@ -23,9 +23,4 @@ public class Vehicle {
     private String vehicleNumber;
 
     private String colour;
-
-    @JoinColumn
-    @OneToOne
-    private Driver driver;
-
 }

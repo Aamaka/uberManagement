@@ -1,8 +1,8 @@
 package africa.semicolon.ubermanagement.data.models;
+import africa.semicolon.ubermanagement.data.models.enums.DriverStatus;
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 
@@ -14,27 +14,30 @@ import javax.validation.constraints.Email;
 @Builder
 public class Driver {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int driverId;
-    private String driverName;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+    private String name;
     private String address;
 
     @Email
     @Column(unique = true)
     public String email;
-    private String driverContact;
-    private String carNumber;
-    private String carType;
-    private String carColour;
 
-    @JsonIgnore
+    @Column(unique = true)
+    private String phoneNumber;
+
+//    @JsonIgnore
     private String password;
 
-    @JsonIgnore
+//    @JsonIgnore
     private String confirmPassword;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    private DriverStatus driverStatus;
     private String location;
+
 
 }

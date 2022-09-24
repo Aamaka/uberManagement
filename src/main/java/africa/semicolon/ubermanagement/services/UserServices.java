@@ -6,8 +6,8 @@ import africa.semicolon.ubermanagement.exception.UserException;
 
 public interface UserServices {
     CreateUserResponse createUser(CreateUserRequest request) throws UserException;
-    LoginUserResponse login(LoginUserRequest request) throws UserException;
-    BookUserResponse book(BookUserRequest request) throws UserException;
+    LoginUserResponse login(LoginUserRequest request);
+    BookUserResponse book(BookUserRequest request);
     PaymentResponse payment(PaymentRequest request);
     UserFeedbackResponse feedback(UserFeedbackRequest request);
 }
