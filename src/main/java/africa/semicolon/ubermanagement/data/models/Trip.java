@@ -3,11 +3,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -23,6 +22,7 @@ public class Trip {
     private String pickUpAddress;
 
     private String dropOffAddress;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime time = LocalDateTime.now();
     @ManyToOne
@@ -31,8 +31,7 @@ public class Trip {
 
     @ManyToOne
     @JoinColumn
+    @Cascade(org.hibernate.annotations.CascadeType.PERSIST)
     private Driver driver;
-
-
 
 }

@@ -1,8 +1,11 @@
 package africa.semicolon.ubermanagement.data.models;
 import africa.semicolon.ubermanagement.data.models.enums.DriverStatus;
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
-import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 

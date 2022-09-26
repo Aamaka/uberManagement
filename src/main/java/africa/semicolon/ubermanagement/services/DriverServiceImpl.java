@@ -2,7 +2,9 @@ package africa.semicolon.ubermanagement.services;
 import africa.semicolon.ubermanagement.data.models.Driver;
 import africa.semicolon.ubermanagement.data.models.Vehicle;
 import africa.semicolon.ubermanagement.data.models.enums.DriverStatus;
+import africa.semicolon.ubermanagement.data.repositories.UserRepository;
 import africa.semicolon.ubermanagement.data.repositories.VehicleRepository;
+import africa.semicolon.ubermanagement.dtos.driver.requests.GetDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
@@ -29,6 +31,7 @@ public class DriverServiceImpl implements DriverService{
 
     private final DriverRepository repository;
     private final VehicleRepository vehicleRepository;
+    private  final UserRepository userRepository;
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
@@ -56,27 +59,25 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public DriverDto getDriver(String location) throws UserException {
+    public Driver getDriver(String location) throws UserException {
         List<Driver> availableDrivers =  new ArrayList<>();
         List<Driver> driverList = repository.findDriverByLocation(location);
         log.info("{}", driverList.size());
+        log.info("{}", repository.findAll());
         for (Driver driver : driverList) {
             if (driver.getDriverStatus().equals(DriverStatus.AVAILABLE)) {
                 availableDrivers.add(driver);
-            }else {
-                DriverDto driverDto = new DriverDto();
-                driverDto.setMessage("No available driver ");
-                return driverDto;
             }
+        }
+        if (availableDrivers.size() == 0){
+            throw new UserException("No available Driver", HttpStatus.EXPECTATION_FAILED);
         }
         if(availableDrivers.size() > 1){
             SecureRandom random = new SecureRandom();
-            Driver assignDriver = availableDrivers.get(random.nextInt(availableDrivers.size()));
-            return getDriverDto(assignDriver);
+            return availableDrivers.get(random.nextInt(availableDrivers.size()));
 
         }else {
-            Driver driver1 = availableDrivers.get(0);
-            return getDriverDto(driver1);
+            return availableDrivers.get(0);
         }
 
     }
@@ -114,30 +115,8 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public RegisterVehicleResponse registerVehicle(RegisterVehicleRequest request) throws UserException {
-        Optional<Driver> driver = repository.findDriverByEmail(request.getEmail());
-        if(driver.isPresent()){
-            Optional<Vehicle> vehicle = vehicleRepository.findByDriver(driver.get());
-            if(vehicle.isEmpty()){
-                Vehicle vehicle1 = Vehicle.builder()
-                        .model(request.getModel())
-                        .vehicleNumber(request.getVehicleNumber())
-                        .colour(request.getColour())
-                        .driver(driver.get())
-                        .build();
-                Vehicle saved = vehicleRepository.save(vehicle1);
-                RegisterVehicleResponse response = new RegisterVehicleResponse();
-                response.setMessage("Vehicle assigned successfully to "+ saved.getDriver().getName());
-                return response;
-            }
-            throw new UserException("You already have a vehicle", HttpStatus.NOT_ACCEPTABLE);
-        }
-        throw new UserException("Driver does not exist", HttpStatus.FOUND);
-
-    }
-
-    @Override
-    public BookingResponse bookingDetails() {
+    public BookingResponse bookingDetails(String location) {
+//        Optional<User> user =
         return null;
     }
 

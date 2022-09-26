@@ -12,6 +12,7 @@ import africa.semicolon.ubermanagement.dtos.user.responses.LoginUserResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import africa.semicolon.ubermanagement.services.DriverService;
 import africa.semicolon.ubermanagement.services.UserServices;
+import africa.semicolon.ubermanagement.services.VehicleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class UserController {
     private  final UserServices services;
     private final DriverService driverService;
 
+    private final VehicleService vehicleService;
     @PostMapping("/createUser")
     public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) throws UserException {
         CreateUserResponse response = services.createUser(request);
@@ -51,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/book")
-    public BookUserResponse book (@RequestBody BookUserRequest request) {
+    public BookUserResponse book (@RequestBody BookUserRequest request) throws UserException {
         log.info("login response controller");
         return services.book(request);
     }
@@ -70,10 +72,16 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getDriver")
-    public DriverDto getDriver(@RequestBody String location) throws UserException {
-        return driverService.getDriver(location);
-    }
+//    @GetMapping("/getDriver")
+//    public ResponseEntity<?> getDriver(@RequestBody GetDriverRequest request) throws UserException {
+//        DriverDto dto =  driverService.getDriver(request);
+//        ApiResponse apiResponse = ApiResponse.builder()
+//                .status("Successful")
+//                .message("here is your driver")
+//                .data(dto)
+//                .build();
+//        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+//    }
 
     @PostMapping("/login/driver")
     public ResponseEntity<?> loginDriver(@RequestBody LoginDriverRequest request) throws UserException {
@@ -89,7 +97,7 @@ public class UserController {
 
     @PostMapping("vehicle/")
     public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws UserException{
-        RegisterVehicleResponse response = driverService.registerVehicle(request);
+        RegisterVehicleResponse response = vehicleService.registerVehicle(request);
         ApiResponse apiResponse = ApiResponse.builder()
                 .status("Successful")
                 .message("Have a great first day with your vehicle")
