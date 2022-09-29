@@ -1,14 +1,15 @@
 package africa.semicolon.ubermanagement.services;
-
 import africa.semicolon.ubermanagement.data.models.Driver;
-import africa.semicolon.ubermanagement.dtos.driver.requests.GetDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleRequest;
+import africa.semicolon.ubermanagement.data.models.Trip;
+import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
 import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
+
+import java.util.List;
 
 public interface DriverService {
     RegisterDriverResponse register(RegisterDriverRequest request) throws UserException;
@@ -20,6 +21,8 @@ public interface DriverService {
     BookingResponse bookingDetails(String location);
 
     PaymentResponse payment(PaymentRequest request);
+
+    List<Trip> getAllTrips(GetTripHistory history) throws UserException;
 
 
 }

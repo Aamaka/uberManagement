@@ -1,8 +1,8 @@
 package africa.semicolon.ubermanagement.controllers;
+
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleRequest;
-import africa.semicolon.ubermanagement.dtos.driver.responses.*;
-import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
+import africa.semicolon.ubermanagement.dtos.driver.responses.ApiResponse;
+import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterVehicleResponse;
 import africa.semicolon.ubermanagement.dtos.user.requests.BookUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.CreateUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.LoginUserRequest;
@@ -10,7 +10,6 @@ import africa.semicolon.ubermanagement.dtos.user.responses.BookUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.CreateUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.LoginUserResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
-import africa.semicolon.ubermanagement.services.DriverService;
 import africa.semicolon.ubermanagement.services.UserServices;
 import africa.semicolon.ubermanagement.services.VehicleService;
 import lombok.AllArgsConstructor;
@@ -22,13 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/uber")
+@RequestMapping("/api/v1/user/")
 public class UserController {
     private  final UserServices services;
-    private final DriverService driverService;
 
-    private final VehicleService vehicleService;
-    @PostMapping("/createUser")
+
+    @PostMapping("register/")
     public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) throws UserException {
         CreateUserResponse response = services.createUser(request);
         ApiResponse apiResponse = ApiResponse.builder()
@@ -58,53 +56,6 @@ public class UserController {
         return services.book(request);
     }
 
-    @PostMapping("/driver")
-//    @RequestMapping(method = POST ,value = "")
-    public ResponseEntity<?> register(@RequestBody RegisterDriverRequest request) throws UserException {
-        log.info("Account creation Request ==> {}", request);
-        RegisterDriverResponse response = driverService.register(request);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .status("Successful")
-                .message("Driver created successfully")
-                .data(response)
-                .build();
-        log.info("returning response");
-        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
-    }
 
-//    @GetMapping("/getDriver")
-//    public ResponseEntity<?> getDriver(@RequestBody GetDriverRequest request) throws UserException {
-//        DriverDto dto =  driverService.getDriver(request);
-//        ApiResponse apiResponse = ApiResponse.builder()
-//                .status("Successful")
-//                .message("here is your driver")
-//                .data(dto)
-//                .build();
-//        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-//    }
-
-    @PostMapping("/login/driver")
-    public ResponseEntity<?> loginDriver(@RequestBody LoginDriverRequest request) throws UserException {
-        LoginDriverResponse response = driverService.login(request);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .status("Successful")
-                .message("Start work")
-                .data(response)
-                .build();
-
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
-
-    @PostMapping("vehicle/")
-    public ResponseEntity<?> registerVehicle(@RequestBody RegisterVehicleRequest request) throws UserException{
-        RegisterVehicleResponse response = vehicleService.registerVehicle(request);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .status("Successful")
-                .message("Have a great first day with your vehicle")
-                .data(response)
-                .build();
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-
-    }
 
 }

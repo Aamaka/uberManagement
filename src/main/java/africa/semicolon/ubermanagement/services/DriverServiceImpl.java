@@ -1,15 +1,11 @@
 package africa.semicolon.ubermanagement.services;
 import africa.semicolon.ubermanagement.data.models.Driver;
-import africa.semicolon.ubermanagement.data.models.Vehicle;
+import africa.semicolon.ubermanagement.data.models.Trip;
 import africa.semicolon.ubermanagement.data.models.enums.DriverStatus;
-import africa.semicolon.ubermanagement.data.repositories.UserRepository;
-import africa.semicolon.ubermanagement.data.repositories.VehicleRepository;
-import africa.semicolon.ubermanagement.dtos.driver.requests.GetDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleRequest;
+import africa.semicolon.ubermanagement.data.repositories.TripRepository;
+import africa.semicolon.ubermanagement.dtos.driver.requests.*;
 import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
-import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
-import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
 import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
@@ -30,8 +26,7 @@ public class DriverServiceImpl implements DriverService{
 
 
     private final DriverRepository repository;
-    private final VehicleRepository vehicleRepository;
-    private  final UserRepository userRepository;
+    private final TripRepository tripRepository;
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
@@ -82,20 +77,6 @@ public class DriverServiceImpl implements DriverService{
 
     }
 
-    private DriverDto getDriverDto(Driver assignDriver) throws UserException {
-        Optional<Vehicle> vehicle = vehicleRepository.findByDriver(assignDriver);
-        if(vehicle.isPresent()){
-            return DriverDto.builder()
-                    .name(assignDriver.getName())
-                    .phoneNumber(assignDriver.getPhoneNumber())
-                    .model(vehicle.get().getModel())
-                    .color(vehicle.get().getColour())
-                    .vehicleNumber(vehicle.get().getVehicleNumber())
-                    .build();
-        }
-        throw new UserException("Driver's Vehicle is faulty",  HttpStatus.NOT_FOUND);
-    }
-
     @Override
     public LoginDriverResponse login(LoginDriverRequest request) throws UserException {
         Optional<Driver> driver = repository.findDriverByEmail(request.getEmail());
@@ -125,6 +106,20 @@ public class DriverServiceImpl implements DriverService{
         return null;
     }
 
+    @Override
+    public List<Trip> getAllTrips(GetTripHistory history) throws UserException {
+        Optional<Driver> driver = repository.findDriverByEmail(history.getEmail());
+        if(driver.isPresent()){
+            List<Trip> trip =  tripRepository.findTripsByDriver(driver.get());
+            if(!trip.isEmpty()){
+                return trip;
+            }else
+                throw new UserException("Driver does not have any trip", HttpStatus.NOT_FOUND);
+        }else {
+            throw new UserException("Driver does not exist", HttpStatus.NOT_FOUND);
+        }
+
+    }
 
 
 }

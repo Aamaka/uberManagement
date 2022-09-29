@@ -6,8 +6,6 @@ import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleReque
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterVehicleResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 
-import java.util.Optional;
-
 public interface VehicleService {
     Vehicle getVehicleByDriver(Driver driver);
 
