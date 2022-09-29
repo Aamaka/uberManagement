@@ -1,9 +1,7 @@
 package africa.semicolon.ubermanagement.data.models;
 
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
-import africa.semicolon.ubermanagement.data.models.enums.PaymentType;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -17,7 +15,7 @@ import javax.validation.constraints.Email;
 @Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;

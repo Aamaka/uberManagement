@@ -1,11 +1,10 @@
 package africa.semicolon.ubermanagement.services;
 
-import africa.semicolon.ubermanagement.data.models.Driver;
-import africa.semicolon.ubermanagement.data.models.Trip;
-import africa.semicolon.ubermanagement.data.models.User;
-import africa.semicolon.ubermanagement.data.models.Vehicle;
+import africa.semicolon.ubermanagement.data.models.*;
+import africa.semicolon.ubermanagement.data.repositories.PaymentRepository;
 import africa.semicolon.ubermanagement.data.repositories.TripRepository;
 import africa.semicolon.ubermanagement.data.repositories.UserRepository;
+import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
@@ -15,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserServices{
     private final DriverService driverService;
     private final TripRepository tripRepository;
     private final VehicleService vehicleService;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
@@ -87,6 +88,20 @@ public class UserServiceImpl implements UserServices{
         throw new UserException("Invalid email", HttpStatus.NOT_FOUND);
     }
 
+    @Override
+    public List<Trip> getAllTrips(String email) throws UserException {
+        Optional<User> user = userRepository.findUserByEmail(email);
+        if(user.isPresent()){
+            List<Trip> trip =  tripRepository.findTripsByUser(user.get());
+            if(!trip.isEmpty()){
+                return trip;
+            }else
+                throw new UserException("User does not have any trip", HttpStatus.NOT_FOUND);
+        }else {
+            throw new UserException("User does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+
     private BookUserResponse buildBookTripResponse(Trip trip, Trip saved, Vehicle vehicle) {
         return BookUserResponse.builder()
                 .message("you have been connected to your trip from " + saved.getPickUpAddress() + " has been ordered")
@@ -100,8 +115,26 @@ public class UserServiceImpl implements UserServices{
     }
 
     @Override
-    public PaymentResponse payment(PaymentRequest request) {
-        return null;
+    public PaymentResponse payment(PaymentRequest request) throws UserException {
+        PaymentResponse response = new PaymentResponse();
+      List<Trip> trips =  getAllTrips(request.getEmail());
+      if (!trips.isEmpty()){
+          Trip trip = trips.get(trips.size() - 1);
+          Payment payment = Payment.builder()
+                  .user(trip.getUser())
+                  .paymentType(request.getPaymentType())
+                  .trip(trip)
+                  .amount(request.getAmount())
+                  .build();
+          Payment saved = paymentRepository.save(payment);
+
+                  response.setMessage("Your payment of $"+ saved.getAmount() + " for the trip from "+
+                          trip.getPickUpAddress() + " to "+ trip.getDropOffAddress() + " was successful");
+      }else {
+          response.setMessage("Focus");
+      }
+        return response;
+
     }
 
     @Override
@@ -110,14 +143,4 @@ public class UserServiceImpl implements UserServices{
     }
 
 
-//    @Override
-//    public PaymentResponse payment(PaymentRequest request) {
-//
-//        return null;
-//    }
-//
-//    @Override
-//    public UserFeedbackResponse feedback(UserFeedbackRequest request) {
-//        return null;
-//    }
 }

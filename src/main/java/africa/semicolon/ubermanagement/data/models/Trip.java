@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Trip {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String location;

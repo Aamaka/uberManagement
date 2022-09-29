@@ -53,7 +53,7 @@ public class DriverController {
     }
 
     @GetMapping("/all")
-    public List<Trip> getAllTrips(GetTripHistory history) throws UserException {
+    public List<Trip> getAllTrips(@RequestBody GetTripHistory history) throws UserException {
         return driverService.getAllTrips(history);
     }
 

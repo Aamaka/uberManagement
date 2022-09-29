@@ -1,22 +1,25 @@
 package africa.semicolon.ubermanagement.controllers;
 
-import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleRequest;
+import africa.semicolon.ubermanagement.data.models.Trip;
+import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.driver.responses.ApiResponse;
-import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterVehicleResponse;
 import africa.semicolon.ubermanagement.dtos.user.requests.BookUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.CreateUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.LoginUserRequest;
+import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
 import africa.semicolon.ubermanagement.dtos.user.responses.BookUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.CreateUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.LoginUserResponse;
+import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import africa.semicolon.ubermanagement.services.UserServices;
-import africa.semicolon.ubermanagement.services.VehicleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -56,6 +59,14 @@ public class UserController {
         return services.book(request);
     }
 
+    @GetMapping("/allTrips/{email}")
+    public List<Trip> getAllTrips(@PathVariable String email) throws UserException {
+        return services.getAllTrips(email);
+    }
 
+    @PostMapping("/payment")
+    public PaymentResponse payment(@RequestBody PaymentRequest request) throws UserException{
+        return services.payment(request);
+    }
 
 }
