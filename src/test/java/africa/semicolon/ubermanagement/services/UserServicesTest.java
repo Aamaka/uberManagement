@@ -30,33 +30,33 @@ class UserServicesTest {
     @DisplayName("Add a user")
     public void addAUserTest() throws UserException {
         CreateUserRequest request = new CreateUserRequest();
-        request.setName("Obi");
-        request.setPhoneNumber("670890354");
+        request.setName("Obiora");
+        request.setPhoneNumber("6708940354");
         request.setAddress("lag");
-        request.setEmail("obik@gmail.com");
+        request.setEmail("obiora@gmail.com");
         request.setGender(Gender.MALE);
         request.setPassword("8888");
         request.setConfirmPassword("8888");
         CreateUserResponse response = services.createUser(request);
         assertNotNull(response);
-        assertEquals("Your registration was successful Welcome Obi", response.getMessage());
+        assertEquals("Your registration was successful Welcome Obiora", response.getMessage());
     }
 
     @Test
     @DisplayName("Login user")
     public void  testThatAUserCanLogin()  {
         LoginUserRequest request = new LoginUserRequest();
-        request.setEmail("obik@gmail.com");
+        request.setEmail("obiora@gmail.com");
         request.setPassword("8888");
         LoginUserResponse response = services.login(request);
-        assertEquals("Welcome back Obi where you wan go?", response.getMessage());
+        assertEquals("Welcome back Obiora where you wan go?", response.getMessage());
     }
 
     @Test
     @DisplayName("Book a ride")
     public void aUserCanBookARideTest() throws UserException {
         BookUserRequest request = new BookUserRequest();
-        request.setEmail("obik@gmail.com");
+        request.setEmail("obiora@gmail.com");
         request.setLocation("fadeyi");
         request.setPickUpAddress("juno");
         request.setDropOffAddress("aja");
@@ -69,7 +69,7 @@ class UserServicesTest {
     @DisplayName("Test that a user can make payment")
     public void paymentTest() throws UserException {
         PaymentRequest request = PaymentRequest.builder()
-                .email("obik@gmail.com")
+                .email("obiora@gmail.com")
                 .paymentType(PaymentType.TRANSFER)
                 .amount(BigInteger.valueOf(5000))
                 .build();

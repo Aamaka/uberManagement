@@ -32,9 +32,6 @@ public class User {
 //    @JsonIgnore
     private String password;
 
-//    @JsonIgnore
-    private String confirmPassword;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
 

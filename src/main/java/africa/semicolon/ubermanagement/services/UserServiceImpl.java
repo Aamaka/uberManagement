@@ -9,7 +9,10 @@ import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,20 +30,16 @@ public class UserServiceImpl implements UserServices{
     private final VehicleService vehicleService;
     private final PaymentRepository paymentRepository;
 
+
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
         if(userRepository.existsByEmail(request.getEmail()))throw new UserException("User already exist", HttpStatus.NOT_ACCEPTABLE);
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .gender(request.getGender())
-                .address(request.getAddress())
-                .phoneNumber(request.getPhoneNumber())
-                .password(request.getPassword())
-                .confirmPassword(request.getConfirmPassword())
-                .build();
+        User user = modelMapper.map(request, User.class);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         CreateUserResponse response = new CreateUserResponse();
-        if(request.getPassword().equals(request.getConfirmPassword())){
+        if(passwordEncoder.encode(request.getPassword()).equals(passwordEncoder.encode(request.getConfirmPassword()))){
             User saved = userRepository.save(user);
 
             response.setMessage("Your registration was successful Welcome " + saved.getName());

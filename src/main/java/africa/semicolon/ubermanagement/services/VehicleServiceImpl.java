@@ -8,6 +8,7 @@ import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterVehicleReque
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterVehicleResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class VehicleServiceImpl implements VehicleService{
 
     private final VehicleRepository vehicleRepository;
     private final DriverRepository repository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Vehicle getVehicleByDriver(Driver driver) {
@@ -33,13 +35,12 @@ public class VehicleServiceImpl implements VehicleService{
         if(driver.isPresent()){
             Optional<Vehicle> vehicle = vehicleRepository.findByDriver(driver.get());
             if(vehicle.isEmpty()){
-                Vehicle vehicle1 = Vehicle.builder()
-                        .model(request.getModel())
-                        .vehicleNumber(request.getVehicleNumber())
-                        .colour(request.getColour())
-                        .driver(driver.get())
-                        .build();
+
+                Vehicle vehicle1 = modelMapper.map(request, Vehicle.class);
+                vehicle1.setDriver(driver.get());
+
                 Vehicle saved = vehicleRepository.save(vehicle1);
+
                 RegisterVehicleResponse response = new RegisterVehicleResponse();
                 response.setMessage("Vehicle assigned successfully to "+ saved.getDriver().getName());
                 return response;

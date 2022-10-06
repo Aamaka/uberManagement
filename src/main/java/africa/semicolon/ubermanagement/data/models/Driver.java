@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 
@@ -31,9 +30,6 @@ public class Driver {
 
 //    @JsonIgnore
     private String password;
-
-//    @JsonIgnore
-    private String confirmPassword;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
