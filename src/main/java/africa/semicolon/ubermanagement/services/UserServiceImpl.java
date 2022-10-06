@@ -4,7 +4,6 @@ import africa.semicolon.ubermanagement.data.models.*;
 import africa.semicolon.ubermanagement.data.repositories.PaymentRepository;
 import africa.semicolon.ubermanagement.data.repositories.TripRepository;
 import africa.semicolon.ubermanagement.data.repositories.UserRepository;
-import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserServices{
         LoginUserResponse response = new LoginUserResponse();
         if(user.isPresent()){
             if(user.get().getPassword().equals(request.getPassword())){
-                response.setMessage("Welcome "+ user.get().getName());
+                response.setMessage(String.format("Welcome back %s where you wan go?", user.get().getName()));
             }else {
                 response.setMessage("Incorrect Details");
             }
@@ -70,8 +69,11 @@ public class UserServiceImpl implements UserServices{
     @Override
     public BookUserResponse book(BookUserRequest request) throws UserException {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
+        System.out.println("From user=====>"+user);
         if(user.isPresent()){
             Driver driver = driverService.getDriver(request.getLocation());
+            log.info("printing driver::{}", driver.getId());
+            log.info("From driver ====>{}", driver);
             Trip trip = Trip.builder()
                     .pickUpAddress(request.getPickUpAddress())
                     .dropOffAddress(request.getDropOffAddress())
@@ -81,6 +83,7 @@ public class UserServiceImpl implements UserServices{
                     .location(request.getLocation())
                     .build();
             Trip saved = tripRepository.save(trip);
+            log.info("Trip {}", saved);
             Vehicle vehicle = vehicleService.getVehicleByDriver(driver);
 
             return buildBookTripResponse(trip, saved, vehicle);

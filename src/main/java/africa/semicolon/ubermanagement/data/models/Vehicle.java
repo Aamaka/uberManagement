@@ -23,7 +23,7 @@ public class Vehicle {
     private String colour;
 
     @JoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Driver driver;
 
 }

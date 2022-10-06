@@ -17,7 +17,7 @@ import javax.validation.constraints.Email;
 @Builder
 public class Driver {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String address;

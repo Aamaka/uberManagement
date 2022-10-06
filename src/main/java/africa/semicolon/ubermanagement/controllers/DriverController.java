@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.controllers;
 
+import africa.semicolon.ubermanagement.data.models.Driver;
 import africa.semicolon.ubermanagement.data.models.Trip;
 import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
@@ -20,13 +21,13 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/driver/")
+@RequestMapping("/api/v1/driver")
 public class DriverController {
 
 
     private final DriverService driverService;
 
-    @PostMapping("register/")
+    @PostMapping("/registration")
 //    @RequestMapping(method = POST ,value = "")
     public ResponseEntity<?> register(@RequestBody RegisterDriverRequest request) throws UserException {
         log.info("Account creation Request ==> {}", request);
@@ -38,6 +39,11 @@ public class DriverController {
                 .build();
         log.info("returning response");
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("getDriver/{email}")
+    public Driver getDriver(@PathVariable String email) throws UserException {
+        return   driverService.getDriver(email);
     }
 
     @PostMapping("/login")
@@ -53,7 +59,7 @@ public class DriverController {
     }
 
     @GetMapping("/all")
-    public List<Trip> getAllTrips(@RequestBody GetTripHistory history) throws UserException {
+    public List<Trip> getAllTrips(GetTripHistory history) throws UserException {
         return driverService.getAllTrips(history);
     }
 
