@@ -39,9 +39,8 @@ public class UserServiceImpl implements UserServices{
         User user = modelMapper.map(request, User.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         CreateUserResponse response = new CreateUserResponse();
-        if(passwordEncoder.encode(request.getPassword()).equals(passwordEncoder.encode(request.getConfirmPassword()))){
+        if(request.getPassword().equals(request.getConfirmPassword())){
             User saved = userRepository.save(user);
-
             response.setMessage("Your registration was successful Welcome " + saved.getName());
         }else {
             response.setMessage("Password Mismatch");
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserServices{
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
         LoginUserResponse response = new LoginUserResponse();
         if(user.isPresent()){
-            if(user.get().getPassword().equals(request.getPassword())){
+            if(passwordEncoder.matches(request.getPassword(),user.get().getPassword())){
                 response.setMessage(String.format("Welcome back %s where you wan go?", user.get().getName()));
             }else {
                 response.setMessage("Incorrect Details");

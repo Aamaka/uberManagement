@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -29,11 +30,13 @@ public class DriverServiceImpl implements DriverService{
     private final TripRepository tripRepository;
 
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
         if(repository.existsByEmail(request.getEmail()))throw new UserException("User already exist", HttpStatus.NOT_ACCEPTABLE);
         Driver driver = modelMapper.map(request, Driver.class);
+        driver.setPassword(passwordEncoder.encode(request.getPassword()));
         RegisterDriverResponse response = new RegisterDriverResponse();
         if(request.getPassword().equals(request.getConfirmPassword())){
             Driver saved = repository.save(driver);
@@ -74,7 +77,7 @@ public class DriverServiceImpl implements DriverService{
     public LoginDriverResponse login(LoginDriverRequest request) throws UserException {
         Optional<Driver> driver = repository.findDriverByEmail(request.getEmail());
         if(driver.isPresent()){
-            if(driver.get().getPassword().equals(request.getPassword())){
+            if(passwordEncoder.matches(request.getPassword(), driver.get().getPassword())){
                 driver.get().setLocation(request.getLocation());
                 driver.get().setDriverStatus(request.getDriverStatus());
                 repository.save(driver.get());
