@@ -1,5 +1,6 @@
 package africa.semicolon.ubermanagement.services;
 
+import africa.semicolon.ubermanagement.config.SecureUser;
 import africa.semicolon.ubermanagement.data.models.*;
 import africa.semicolon.ubermanagement.data.repositories.PaymentRepository;
 import africa.semicolon.ubermanagement.data.repositories.TripRepository;
@@ -7,11 +8,14 @@ import africa.semicolon.ubermanagement.data.repositories.UserRepository;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
-import lombok.AllArgsConstructor;
+import africa.semicolon.ubermanagement.validation.ValidateEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,33 +23,44 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static africa.semicolon.ubermanagement.validation.ValidateEmail.validateEmail;
 
-@AllArgsConstructor
+
 @Service
 @Slf4j
-public class UserServiceImpl implements UserServices{
-    private  final UserRepository userRepository;
-    private final DriverService driverService;
-    private final TripRepository tripRepository;
-    private final VehicleService vehicleService;
-    private final PaymentRepository paymentRepository;
+public class UserServiceImpl implements UserServices, UserDetailsService {
+    @Autowired
+    private   UserRepository userRepository;
+    @Autowired
+    private  DriverService driverService;
+    @Autowired
+    private  TripRepository tripRepository;
+    @Autowired
+    private VehicleService vehicleService;
+    @Autowired
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
+    @Autowired
+    private  ModelMapper modelMapper;
 
 
-    private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
     @Override
     public CreateUserResponse createUser(CreateUserRequest request) throws UserException {
         if(userRepository.existsByEmail(request.getEmail()))throw new UserException("User already exist", HttpStatus.NOT_ACCEPTABLE);
-        User user = modelMapper.map(request, User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        CreateUserResponse response = new CreateUserResponse();
-        if(request.getPassword().equals(request.getConfirmPassword())){
-            User saved = userRepository.save(user);
-            response.setMessage("Your registration was successful Welcome " + saved.getName());
-        }else {
-            response.setMessage("Password Mismatch");
+        if(validateEmail(request.getEmail())){
+            User user = modelMapper.map(request, User.class);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            CreateUserResponse response = new CreateUserResponse();
+            if(request.getPassword().equals(request.getConfirmPassword())){
+                User saved = userRepository.save(user);
+                response.setMessage("Your registration was successful Welcome " + saved.getName());
+            }else {
+                response.setMessage("Password Mismatch");
+            }
+            return response;
         }
-        return response;
+     throw new UserException("Invalid email syntax", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Override
@@ -143,5 +158,14 @@ public class UserServiceImpl implements UserServices{
         return null;
     }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(username)
+                .orElseThrow(()-> new UsernameNotFoundException("User does not exist"));
+
+        return new SecureUser(user);
+
+    }
 
 }

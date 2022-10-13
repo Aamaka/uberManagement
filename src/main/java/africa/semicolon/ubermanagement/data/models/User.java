@@ -22,7 +22,6 @@ public class User {
 
     private String address;
 
-    @Email
     @Column(unique = true)
     private  String email;
 

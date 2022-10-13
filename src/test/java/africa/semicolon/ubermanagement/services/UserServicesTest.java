@@ -30,16 +30,17 @@ class UserServicesTest {
     @DisplayName("Add a user")
     public void addAUserTest() throws UserException {
         CreateUserRequest request = new CreateUserRequest();
-        request.setName("Obi");
-        request.setPhoneNumber("67089480354");
+        request.setName("Obik");
+        request.setPhoneNumber("67089467354");
         request.setAddress("lag");
-        request.setEmail("obi@gmail.com");
+        request.setEmail("obi mail com");
         request.setGender(Gender.MALE);
         request.setPassword("8887");
         request.setConfirmPassword("8887");
-        CreateUserResponse response = services.createUser(request);
-        assertNotNull(response);
-        assertEquals("Your registration was successful Welcome Obi", response.getMessage());
+//        CreateUserResponse response = services.createUser(request);
+        assertThrows(UserException.class, ()->services.createUser(request));
+//        assertNotNull(response);
+//        assertEquals("Your registration was successful Welcome Obi", response.getMessage());
     }
 
     @Test

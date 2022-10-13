@@ -21,15 +21,13 @@ public class Driver {
     private String name;
     private String address;
 
-    @Email
     @Column(unique = true)
     public String email;
 
     @Column(unique = true)
     private String phoneNumber;
 
-//    @JsonIgnore
-    private String password;
+   private String password;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static africa.semicolon.ubermanagement.validation.ValidateEmail.validateEmail;
+
 @AllArgsConstructor
 @Service
 @Slf4j
@@ -35,18 +37,21 @@ public class DriverServiceImpl implements DriverService{
     @Override
     public RegisterDriverResponse register(RegisterDriverRequest request) throws UserException {
         if(repository.existsByEmail(request.getEmail()))throw new UserException("User already exist", HttpStatus.NOT_ACCEPTABLE);
-        Driver driver = modelMapper.map(request, Driver.class);
-        driver.setPassword(passwordEncoder.encode(request.getPassword()));
-        RegisterDriverResponse response = new RegisterDriverResponse();
-        if(request.getPassword().equals(request.getConfirmPassword())){
-            Driver saved = repository.save(driver);
+        if(validateEmail(request.getEmail())){
+            Driver driver = modelMapper.map(request, Driver.class);
+            driver.setPassword(passwordEncoder.encode(request.getPassword()));
+            RegisterDriverResponse response = new RegisterDriverResponse();
+            if(request.getPassword().equals(request.getConfirmPassword())){
+                Driver saved = repository.save(driver);
 
-            response.setMessage("Your registration was successful Welcome " + saved.getName());
-        }else {
-            response.setMessage("Password Mismatch");
+                response.setMessage("Your registration was successful Welcome " + saved.getName());
+            }else {
+                response.setMessage("Password Mismatch");
+            }
+
+            return response;
         }
-
-        return response;
+       throw new UserException("Invalid email syntax", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Override
