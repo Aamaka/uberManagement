@@ -1,10 +1,7 @@
 package africa.semicolon.ubermanagement.data.models;
-
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.*;
-
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 
 @Entity

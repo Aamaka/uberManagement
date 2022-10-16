@@ -20,8 +20,8 @@ class DriverServiceTest {
     private DriverService driverService;
 
     @Test
-    @DisplayName("Create a user")
-    public void testToCreateAUser() throws UserException {
+    @DisplayName("Create a driver")
+    public void testToCreateADriver() throws UserException {
         RegisterDriverRequest request = RegisterDriverRequest.builder()
                 .name("lalah")
                 .address("aja")
