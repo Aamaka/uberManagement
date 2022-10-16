@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 
 @Entity
@@ -27,7 +26,7 @@ public class Driver {
     @Column(unique = true)
     private String phoneNumber;
 
-   private String password;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
