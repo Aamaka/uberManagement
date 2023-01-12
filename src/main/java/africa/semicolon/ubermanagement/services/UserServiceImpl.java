@@ -1,6 +1,5 @@
 package africa.semicolon.ubermanagement.services;
 
-import africa.semicolon.ubermanagement.config.SecureUser;
 import africa.semicolon.ubermanagement.data.models.*;
 import africa.semicolon.ubermanagement.data.repositories.PaymentRepository;
 import africa.semicolon.ubermanagement.data.repositories.TripRepository;
@@ -8,15 +7,10 @@ import africa.semicolon.ubermanagement.data.repositories.UserRepository;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
-import africa.semicolon.ubermanagement.validation.ValidateEmail;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,21 +22,15 @@ import static africa.semicolon.ubermanagement.validation.ValidateEmail.validateE
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserServices, UserDetailsService {
-    @Autowired
-    private   UserRepository userRepository;
-    @Autowired
-    private  DriverService driverService;
-    @Autowired
-    private  TripRepository tripRepository;
-    @Autowired
-    private VehicleService vehicleService;
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private  PasswordEncoder passwordEncoder;
-    @Autowired
-    private  ModelMapper modelMapper;
+@AllArgsConstructor
+public class UserServiceImpl implements UserServices {
+    private final UserRepository userRepository;
+    private final DriverService driverService;
+    private final TripRepository tripRepository;
+    private final VehicleService vehicleService;
+    private final PaymentRepository paymentRepository;
+
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -50,7 +38,6 @@ public class UserServiceImpl implements UserServices, UserDetailsService {
         if(userRepository.existsByEmail(request.getEmail()))throw new UserException("User already exist", HttpStatus.NOT_ACCEPTABLE);
         if(validateEmail(request.getEmail())){
             User user = modelMapper.map(request, User.class);
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
             CreateUserResponse response = new CreateUserResponse();
             if(request.getPassword().equals(request.getConfirmPassword())){
                 User saved = userRepository.save(user);
@@ -68,7 +55,7 @@ public class UserServiceImpl implements UserServices, UserDetailsService {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
         LoginUserResponse response = new LoginUserResponse();
         if(user.isPresent()){
-            if(passwordEncoder.matches(request.getPassword(),user.get().getPassword())){
+            if(request.getPassword().equals(user.get().getPassword())){
                 response.setMessage(String.format("Welcome back %s where you wan go?", user.get().getName()));
             }else {
                 response.setMessage("Incorrect Details");
@@ -159,13 +146,5 @@ public class UserServiceImpl implements UserServices, UserDetailsService {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("User does not exist"));
-
-        return new SecureUser(user);
-
-    }
 
 }
