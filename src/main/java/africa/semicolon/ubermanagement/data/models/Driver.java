@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -31,6 +32,7 @@ public class Driver {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private LocalDateTime dateTime ;
     @Enumerated(EnumType.STRING)
     private DriverStatus driverStatus;
     private String location;

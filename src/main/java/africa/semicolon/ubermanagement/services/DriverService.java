@@ -6,7 +6,7 @@ import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
-import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
+import africa.semicolon.ubermanagement.dtos.user.responses.InitialPaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface DriverService {
 
     BookingResponse bookingDetails(String location);
 
-    PaymentResponse payment(PaymentRequest request);
+    InitialPaymentResponse payment(PaymentRequest request);
 
     List<Trip> getAllTrips(GetTripHistory history) throws UserException;
 

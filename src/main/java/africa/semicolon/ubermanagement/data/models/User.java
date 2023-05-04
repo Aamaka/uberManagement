@@ -2,6 +2,7 @@ package africa.semicolon.ubermanagement.data.models;
 import africa.semicolon.ubermanagement.data.models.enums.Gender;
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -25,9 +26,9 @@ public class User {
     @Column(unique = true)
     private String phoneNumber;
 
-//    @JsonIgnore
     private String password;
 
+    private LocalDateTime dateTime;
     @Enumerated(EnumType.STRING)
     private Gender gender;
 

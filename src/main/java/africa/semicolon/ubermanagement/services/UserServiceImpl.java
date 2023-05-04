@@ -10,8 +10,10 @@ import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +31,8 @@ public class UserServiceImpl implements UserServices {
     private final TripRepository tripRepository;
     private final VehicleService vehicleService;
     private final PaymentRepository paymentRepository;
-
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -40,6 +42,8 @@ public class UserServiceImpl implements UserServices {
             User user = modelMapper.map(request, User.class);
             CreateUserResponse response = new CreateUserResponse();
             if(request.getPassword().equals(request.getConfirmPassword())){
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+                user.setDateTime(LocalDateTime.now());
                 User saved = userRepository.save(user);
                 response.setMessage("Your registration was successful Welcome " + saved.getName());
             }else {
@@ -55,7 +59,7 @@ public class UserServiceImpl implements UserServices {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
         LoginUserResponse response = new LoginUserResponse();
         if(user.isPresent()){
-            if(request.getPassword().equals(user.get().getPassword())){
+            if(passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
                 response.setMessage(String.format("Welcome back %s where you wan go?", user.get().getName()));
             }else {
                 response.setMessage("Incorrect Details");
@@ -69,11 +73,8 @@ public class UserServiceImpl implements UserServices {
     @Override
     public BookUserResponse book(BookUserRequest request) throws UserException {
         Optional<User> user = userRepository.findUserByEmail(request.getEmail());
-        System.out.println("From user=====>"+user);
         if(user.isPresent()){
             Driver driver = driverService.getDriver(request.getLocation());
-            log.info("printing driver::{}", driver.getId());
-            log.info("From driver ====>{}", driver);
             Trip trip = Trip.builder()
                     .pickUpAddress(request.getPickUpAddress())
                     .dropOffAddress(request.getDropOffAddress())
@@ -83,7 +84,6 @@ public class UserServiceImpl implements UserServices {
                     .location(request.getLocation())
                     .build();
             Trip saved = tripRepository.save(trip);
-            log.info("Trip {}", saved);
             Vehicle vehicle = vehicleService.getVehicleByDriver(driver);
 
             return buildBookTripResponse(trip, saved, vehicle);
@@ -118,26 +118,27 @@ public class UserServiceImpl implements UserServices {
     }
 
     @Override
-    public PaymentResponse payment(PaymentRequest request) throws UserException {
-        PaymentResponse response = new PaymentResponse();
-      List<Trip> trips =  getAllTrips(request.getEmail());
-      if (!trips.isEmpty()){
-          Trip trip = trips.get(trips.size() - 1);
-          Payment payment = Payment.builder()
-                  .user(trip.getUser())
-                  .paymentType(request.getPaymentType())
-                  .trip(trip)
-                  .amount(request.getAmount())
-                  .build();
-          Payment saved = paymentRepository.save(payment);
+    public InitialPaymentResponse payment(PaymentRequest request) throws UserException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String key = "secretKey";
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("Authorization", "Bearer "+key);
+        HttpEntity<PaymentRequest> requestEntity = new HttpEntity<>(request, httpHeaders);
+        ResponseEntity<InitialPaymentResponse> response = restTemplate.postForEntity("https://api.paystack.co/transaction/initialize", requestEntity, InitialPaymentResponse.class);
+        List<Trip> trips =  getAllTrips(request.getEmail());
+        if (!trips.isEmpty()) {
+            Trip trip = trips.get(trips.size() - 1);
+            Payment payment = Payment.builder()
+                    .user(trip.getUser())
+                    .paymentType(request.getPaymentType())
+                    .trip(trip)
+                    .amount(request.getAmount())
+                    .build();
+            paymentRepository.save(payment);
 
-                  response.setMessage("Your payment of $"+ saved.getAmount() + " for the trip from "+
-                          trip.getPickUpAddress() + " to "+ trip.getDropOffAddress() + " was successful");
-      }else {
-          response.setMessage("Focus");
-      }
-        return response;
-
+        }
+        return response.getBody();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package africa.semicolon.ubermanagement.services;
 
 import africa.semicolon.ubermanagement.data.models.Trip;
-import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.user.requests.*;
 import africa.semicolon.ubermanagement.dtos.user.responses.*;
 import africa.semicolon.ubermanagement.exception.UserException;
@@ -14,6 +13,6 @@ public interface UserServices {
     BookUserResponse book(BookUserRequest request) throws UserException;
 
     List<Trip> getAllTrips(String email) throws UserException;
-    PaymentResponse payment(PaymentRequest request) throws UserException;
+    InitialPaymentResponse payment(PaymentRequest request) throws UserException;
     UserFeedbackResponse feedback(UserFeedbackRequest request);
 }

@@ -7,9 +7,8 @@ import africa.semicolon.ubermanagement.dtos.user.requests.CreateUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.LoginUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
 import africa.semicolon.ubermanagement.dtos.user.responses.BookUserResponse;
-import africa.semicolon.ubermanagement.dtos.user.responses.CreateUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.LoginUserResponse;
-import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
+import africa.semicolon.ubermanagement.dtos.user.responses.InitialPaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ class UserServicesTest {
                 .paymentType(PaymentType.TRANSFER)
                 .amount(BigInteger.valueOf(5000))
                 .build();
-        PaymentResponse response = services.payment(request);
+        InitialPaymentResponse response = services.payment(request);
         assertEquals("Your payment of $5000 for the trip from juno to aja was successful", response.getMessage());
     }
 }

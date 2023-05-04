@@ -1,7 +1,6 @@
 package africa.semicolon.ubermanagement.controllers;
 
 import africa.semicolon.ubermanagement.data.models.Trip;
-import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.driver.responses.ApiResponse;
 import africa.semicolon.ubermanagement.dtos.user.requests.BookUserRequest;
 import africa.semicolon.ubermanagement.dtos.user.requests.CreateUserRequest;
@@ -10,7 +9,7 @@ import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
 import africa.semicolon.ubermanagement.dtos.user.responses.BookUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.CreateUserResponse;
 import africa.semicolon.ubermanagement.dtos.user.responses.LoginUserResponse;
-import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
+import africa.semicolon.ubermanagement.dtos.user.responses.InitialPaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import africa.semicolon.ubermanagement.services.UserServices;
 import lombok.AllArgsConstructor;
@@ -65,7 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/payment")
-    public PaymentResponse payment(@RequestBody PaymentRequest request) throws UserException{
+    public InitialPaymentResponse payment(@RequestBody PaymentRequest request) throws UserException{
         return services.payment(request);
     }
 

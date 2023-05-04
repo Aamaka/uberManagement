@@ -7,7 +7,7 @@ import africa.semicolon.ubermanagement.dtos.driver.requests.*;
 import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
 import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
-import africa.semicolon.ubermanagement.dtos.user.responses.PaymentResponse;
+import africa.semicolon.ubermanagement.dtos.user.responses.InitialPaymentResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,8 @@ public class DriverServiceImpl implements DriverService{
             driver.setPassword(passwordEncoder.encode(request.getPassword()));
             RegisterDriverResponse response = new RegisterDriverResponse();
             if(request.getPassword().equals(request.getConfirmPassword())){
+                driver.setPassword(passwordEncoder.encode(request.getPassword()));
+                driver.setDateTime(LocalDateTime.now());
                 Driver saved = repository.save(driver);
 
                 response.setMessage("Your registration was successful Welcome " + saved.getName());
@@ -102,7 +105,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public PaymentResponse payment(PaymentRequest request) {
+    public InitialPaymentResponse payment(PaymentRequest request) {
         return null;
     }
 
