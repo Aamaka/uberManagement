@@ -6,15 +6,19 @@ import africa.semicolon.ubermanagement.data.repositories.TripRepository;
 import africa.semicolon.ubermanagement.dtos.driver.requests.*;
 import africa.semicolon.ubermanagement.dtos.driver.responses.*;
 import africa.semicolon.ubermanagement.data.repositories.DriverRepository;
-import africa.semicolon.ubermanagement.dtos.user.requests.PaymentRequest;
-import africa.semicolon.ubermanagement.dtos.user.responses.InitialPaymentResponse;
+
 import africa.semicolon.ubermanagement.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -105,8 +109,15 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    public InitialPaymentResponse payment(PaymentRequest request) {
-        return null;
+    public InitialPaymentVerificationResponse verifyTransaction() {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String key = "secretKey";
+        httpHeaders.set("Authorization", "Bearer "+key);
+        HttpEntity<?> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<InitialPaymentVerificationResponse> response = restTemplate.getForEntity("https://api.paystack.co/transaction/verify/:reference", InitialPaymentVerificationResponse.class);
+
+        return response.getBody();
     }
 
     @Override

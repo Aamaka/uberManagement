@@ -20,7 +20,7 @@ public interface DriverService {
 
     BookingResponse bookingDetails(String location);
 
-    InitialPaymentResponse payment(PaymentRequest request);
+    InitialPaymentVerificationResponse verifyTransaction();
 
     List<Trip> getAllTrips(GetTripHistory history) throws UserException;
 

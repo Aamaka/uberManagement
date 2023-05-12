@@ -6,6 +6,7 @@ import africa.semicolon.ubermanagement.dtos.driver.requests.GetTripHistory;
 import africa.semicolon.ubermanagement.dtos.driver.requests.LoginDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.requests.RegisterDriverRequest;
 import africa.semicolon.ubermanagement.dtos.driver.responses.ApiResponse;
+import africa.semicolon.ubermanagement.dtos.driver.responses.InitialPaymentVerificationResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.LoginDriverResponse;
 import africa.semicolon.ubermanagement.dtos.driver.responses.RegisterDriverResponse;
 import africa.semicolon.ubermanagement.exception.UserException;
@@ -58,6 +59,10 @@ public class DriverController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/verify_payment")
+    public InitialPaymentVerificationResponse verifyTransaction(){
+        return driverService.verifyTransaction();
+    }
     @GetMapping("/all")
     public List<Trip> getAllTrips(GetTripHistory history) throws UserException {
         return driverService.getAllTrips(history);
